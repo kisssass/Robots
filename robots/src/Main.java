@@ -1,5 +1,4 @@
-import view.View;
-import viewmodel.ViewModel;
+import view.GameWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +11,9 @@ public class Main {
             e.printStackTrace();
         }
         SwingUtilities.invokeLater(() -> {
-            View view = new View();
-            view.setVisible(true);
-            view.setExtendedState(Frame.MAXIMIZED_BOTH);
+            GameWindow gameWindow = new GameWindow();
+            gameWindow.setVisible(true);
+            gameWindow.setExtendedState(Frame.MAXIMIZED_BOTH);
         });
     }
 }

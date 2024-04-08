@@ -1,9 +1,9 @@
 package view;
 
-import model.Entity;
+import model.RobotEntity;
 
 import java.awt.*;
 
-public interface EntityRenderer <E extends Entity>{
+public interface EntityRenderer <E extends RobotEntity>{
     void render(E entity, Graphics graphics);
 }

@@ -2,37 +2,34 @@ package model;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /*Модель (Model): Это слой, который содержит данные и бизнес-логику
 приложения. Модель представляет собой объекты, которые представляют
 реальные или виртуальные объекты в вашем приложении. Модель не
 зависит от пользовательского интерфейса и обрабатывает все операции,
 связанные с данными.*/
-public class Model extends JPanel {
-    private final List<Entity> entities = new ArrayList<>();
+public class Model{
+    private final List<RobotEntity> entities = new ArrayList<>();
     public Model()
     {
-        entities.add(new Entity(100, 100, 0, 150, 100, 0.1, 0.001));
+        entities.add(new RobotEntity(100, 100, 0, 150, 100, 0.1, 0.001));
     }
-    public void updateModel(Point p) {
-        for (Entity entity : entities) {
-            entity.update(p);
+    public void updateModel() {
+        for (RobotEntity entity : entities) {
+            entity.update();
         }
     }
-    public List<Entity> getEntities() {
-        return entities;
+    public void mouseActionUpdate(Point p) {
+        for (RobotEntity entity : entities) {
+            entity.setM_targetPositionX(p.x);
+            entity.setM_targetPositionY(p.y);
+        }
     }
-
-    public void onRedrawEvent()
-    {
-        EventQueue.invokeLater(this::repaint);
+    public List<RobotEntity> getEntities() {
+        return entities;
     }
 
     public static double distance(double x1, double y1, double x2, double y2)
@@ -49,13 +46,12 @@ public class Model extends JPanel {
 
         return asNormalizedRadians(Math.atan2(diffY, diffX));
     }
-    //ниже может быть ошибка
     public void onModelUpdateEvent()
     {
         double velocity = 0;
         double angleToTarget = 0;
         double angularVelocity = 0;
-        for (Entity entity : entities) {
+        for (RobotEntity entity : entities) {
             double distance = distance(entity.getTargetPositionX(), entity.getTargetPositionY(),
                     entity.getRobotPositionX(), entity.getRobotPositionY());
             if (distance < 0.5)
@@ -88,7 +84,7 @@ public class Model extends JPanel {
 
     private void moveRobot(double velocity, double angularVelocity, double duration)
     {
-        for (Entity entity : entities) {
+        for (RobotEntity entity : entities) {
             velocity = applyLimits(velocity, 0, entity.getMaxVelocity());
             angularVelocity = applyLimits(angularVelocity, -entity.getMaxAngularVelocity(), entity.getMaxAngularVelocity());
             double newX = entity.getRobotPositionX() + velocity / angularVelocity *
@@ -123,59 +119,5 @@ public class Model extends JPanel {
             angle -= 2*Math.PI;
         }
         return angle;
-    }
-
-    private static int round(double value)
-    {
-        return (int)(value + 0.5);
-    }
-
-    @Override
-    public void paint(Graphics g)
-    {
-        for (Entity entity : entities) {
-            super.paint(g);
-            Graphics2D g2d = (Graphics2D)g;
-            drawRobot(g2d, round(entity.getRobotPositionX()), round(entity.getRobotPositionY()), entity.getRobotDirection());
-            drawTarget(g2d, entity.getTargetPositionX(), entity.getTargetPositionY());
-        }
-    }
-
-    private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
-    {
-        g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-    }
-
-    private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
-    {
-        g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-    }
-
-    private void drawRobot(Graphics2D g, int x, int y, double direction)
-    {
-        for (Entity entity : entities) {
-            int robotCenterX = round(entity.getRobotPositionX());
-            int robotCenterY = round(entity.getRobotPositionY());
-            AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY);
-            g.setTransform(t);
-            g.setColor(Color.MAGENTA);
-            fillOval(g, robotCenterX, robotCenterY, 30, 10);
-            g.setColor(Color.BLACK);
-            drawOval(g, robotCenterX, robotCenterY, 30, 10);
-            g.setColor(Color.WHITE);
-            fillOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
-            g.setColor(Color.BLACK);
-            drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
-        }
-    }
-
-    private void drawTarget(Graphics2D g, int x, int y)
-    {
-        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
-        g.setTransform(t);
-        g.setColor(Color.GREEN);
-        fillOval(g, x, y, 5, 5);
-        g.setColor(Color.BLACK);
-        drawOval(g, x, y, 5, 5);
     }
 }
