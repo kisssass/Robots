@@ -1,34 +1,29 @@
 package model;
-
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
-/*Модель (Model): Это слой, который содержит данные и бизнес-логику
-приложения. Модель представляет собой объекты, которые представляют
-реальные или виртуальные объекты в вашем приложении. Модель не
-зависит от пользовательского интерфейса и обрабатывает все операции,
-связанные с данными.*/
+
 public class Model{
-    private final List<RobotEntity> entities = new ArrayList<>();
+    private final List<Entity> entities = new ArrayList<>();
     public Model()
     {
         entities.add(new RobotEntity(100, 100, 0, 150, 100, 0.1, 0.001));
     }
     public void updateModel() {
-        for (RobotEntity entity : entities) {
+        for (Entity entity : entities) {
             entity.update();
         }
     }
     public void mouseActionUpdate(Point p) {
-        for (RobotEntity entity : entities) {
-            entity.setM_targetPositionX(p.x);
-            entity.setM_targetPositionY(p.y);
+        for (Entity entity : entities) {
+            if (entity instanceof RobotEntity robot){
+                robot.setM_targetPositionX(p.x);
+                robot.setM_targetPositionY(p.y);
+            }
         }
     }
-    public List<RobotEntity> getEntities() {
+    public List<Entity> getEntities() {
         return entities;
     }
 
@@ -51,22 +46,24 @@ public class Model{
         double velocity = 0;
         double angleToTarget = 0;
         double angularVelocity = 0;
-        for (RobotEntity entity : entities) {
-            double distance = distance(entity.getTargetPositionX(), entity.getTargetPositionY(),
-                    entity.getRobotPositionX(), entity.getRobotPositionY());
-            if (distance < 0.5)
-            {
-                return;
-            }
-            velocity = entity.getMaxVelocity();
-            angleToTarget = angleTo(entity.getRobotPositionX(), entity.getRobotPositionY(), entity.getTargetPositionX(), entity.getTargetPositionY());
-            if (angleToTarget > entity.getRobotDirection())
-            {
-                angularVelocity = entity.getMaxAngularVelocity();
-            }
-            if (angleToTarget < entity.getRobotDirection())
-            {
-                angularVelocity = -entity.getMaxAngularVelocity();
+        for (Entity entity : entities) {
+            if (entity instanceof RobotEntity robot){
+                double distance = distance(robot.getTargetPositionX(), robot.getTargetPositionY(),
+                        robot.getRobotPositionX(), robot.getRobotPositionY());
+                if (distance < 0.5)
+                {
+                    return;
+                }
+                velocity = robot.getMaxVelocity();
+                angleToTarget = angleTo(robot.getRobotPositionX(), robot.getRobotPositionY(), robot.getTargetPositionX(), robot.getTargetPositionY());
+                if (angleToTarget > robot.getRobotDirection())
+                {
+                    angularVelocity = robot.getMaxAngularVelocity();
+                }
+                if (angleToTarget < robot.getRobotDirection())
+                {
+                    angularVelocity = -robot.getMaxAngularVelocity();
+                }
             }
         }
 
@@ -84,27 +81,29 @@ public class Model{
 
     private void moveRobot(double velocity, double angularVelocity, double duration)
     {
-        for (RobotEntity entity : entities) {
-            velocity = applyLimits(velocity, 0, entity.getMaxVelocity());
-            angularVelocity = applyLimits(angularVelocity, -entity.getMaxAngularVelocity(), entity.getMaxAngularVelocity());
-            double newX = entity.getRobotPositionX() + velocity / angularVelocity *
-                    (Math.sin(entity.getRobotDirection()  + angularVelocity * duration) -
-                            Math.sin(entity.getRobotDirection()));
-            if (!Double.isFinite(newX))
-            {
-                newX = entity.getRobotPositionX() + velocity * duration * Math.cos(entity.getRobotDirection());
+        for (Entity entity : entities) {
+            if (entity instanceof RobotEntity robot) {
+                velocity = applyLimits(velocity, 0, robot.getMaxVelocity());
+                angularVelocity = applyLimits(angularVelocity, -robot.getMaxAngularVelocity(), robot.getMaxAngularVelocity());
+                double newX = robot.getRobotPositionX() + velocity / angularVelocity *
+                        (Math.sin(robot.getRobotDirection()  + angularVelocity * duration) -
+                                Math.sin(robot.getRobotDirection()));
+                if (!Double.isFinite(newX))
+                {
+                    newX = robot.getRobotPositionX() + velocity * duration * Math.cos(robot.getRobotDirection());
+                }
+                double newY = robot.getRobotPositionY() - velocity / angularVelocity *
+                        (Math.cos(robot.getRobotDirection()  + angularVelocity * duration) -
+                                Math.cos(robot.getRobotDirection()));
+                if (!Double.isFinite(newY))
+                {
+                    newY = robot.getRobotPositionY() + velocity * duration * Math.sin(robot.getRobotDirection());
+                }
+                robot.setRobotPositionX(newX);
+                robot.setRobotPositionY(newY);
+                double newDirection = asNormalizedRadians(robot.getRobotDirection() + angularVelocity * duration);
+                robot.setRobotDirection(newDirection);
             }
-            double newY = entity.getRobotPositionY() - velocity / angularVelocity *
-                    (Math.cos(entity.getRobotDirection()  + angularVelocity * duration) -
-                            Math.cos(entity.getRobotDirection()));
-            if (!Double.isFinite(newY))
-            {
-                newY = entity.getRobotPositionY() + velocity * duration * Math.sin(entity.getRobotDirection());
-            }
-            entity.setRobotPositionX(newX);
-            entity.setRobotPositionY(newY);
-            double newDirection = asNormalizedRadians(entity.getRobotDirection() + angularVelocity * duration);
-            entity.setRobotDirection(newDirection);
         }
     }
 

@@ -1,8 +1,11 @@
 package viewmodel;
+import model.Model;
 import view.View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,6 +17,7 @@ import java.util.TimerTask;
 кнопок или изменения текста.*/
 public class ViewModel extends JInternalFrame{
     private final View view;
+    private final Model model;
 
     private static java.util.Timer initTimer()
     {
@@ -24,7 +28,9 @@ public class ViewModel extends JInternalFrame{
     public ViewModel()
     {
         super("Игровое поле", true, true, true, true);
-        view = new View();
+        model = new Model();
+        view = new View(model);
+
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(view, BorderLayout.CENTER);
         getContentPane().add(panel);
@@ -43,8 +49,17 @@ public class ViewModel extends JInternalFrame{
             @Override
             public void run()
             {
-                view.getModel().onModelUpdateEvent();
+                model.onModelUpdateEvent();
             }
         }, 0, 10);
+        addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                model.mouseActionUpdate(e.getPoint());
+                repaint();
+            }
+        });
     }
 }
