@@ -9,12 +9,7 @@ import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/*ViewModel: Это прослойка между Моделью и Представлением,
-которая связывает их между собой. ViewModel содержит логику
-представления данных для Представления и обрабатывает взаимодействие
-пользователя с интерфейсом. ViewModel обновляет Представление при
-изменении данных в Модели и обрабатывает события, такие как нажатия
-кнопок или изменения текста.*/
+
 public class ViewModel extends JInternalFrame{
     private final View view;
     private final Model model;
@@ -24,7 +19,6 @@ public class ViewModel extends JInternalFrame{
         java.util.Timer timer = new Timer("events generator", true);
         return timer;
     }
-
     public ViewModel()
     {
         super("Игровое поле", true, true, true, true);
@@ -52,6 +46,22 @@ public class ViewModel extends JInternalFrame{
                 model.onModelUpdateEvent();
             }
         }, 0, 10);
+        m_timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                model.addFood();
+            }
+        }, 0, 1000);
+        m_timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                model.eatFood();
+            }
+        }, 0, 50);
         addMouseListener(new MouseAdapter()
         {
             @Override

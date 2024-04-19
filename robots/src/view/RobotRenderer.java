@@ -8,24 +8,20 @@ import java.awt.geom.AffineTransform;
 public class RobotRenderer<E extends RobotEntity> implements EntityRenderer<RobotEntity> {
     @Override
     public void render(RobotEntity entity, Graphics2D g2d) {
-        drawRobot(g2d, round(entity.getRobotPositionX()), round(entity.getRobotPositionY()), entity.getRobotDirection());
+        drawRobot(g2d, round(entity.getRobotPositionX()), round(entity.getRobotPositionY()),entity.getRobotDiameter(), entity.getRobotDirection(), entity.getColor());
         drawTarget(g2d, entity.getTargetPositionX(), entity.getTargetPositionY());
     }
 
-    private void drawRobot(Graphics2D g, int x, int y, double direction)
+    private void drawRobot(Graphics2D g, int x, int y, int diameter, double direction, Color color)
     {
             int robotCenterX = round(x);
             int robotCenterY = round(y);
             AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY);
             g.setTransform(t);
-            g.setColor(Color.MAGENTA);
-            fillOval(g, robotCenterX, robotCenterY, 30, 10);
+            g.setColor(color);
+            fillOval(g, robotCenterX, robotCenterY, diameter, diameter);
             g.setColor(Color.BLACK);
-            drawOval(g, robotCenterX, robotCenterY, 30, 10);
-            g.setColor(Color.WHITE);
-            fillOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
-            g.setColor(Color.BLACK);
-            drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
+            drawOval(g, robotCenterX, robotCenterY, diameter, diameter);
     }
     private void drawTarget(Graphics2D g, int x, int y)
     {

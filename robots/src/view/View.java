@@ -1,6 +1,7 @@
 package view;
 
 import model.Entity;
+import model.FoodEntity;
 import model.Model;
 import model.RobotEntity;
 
@@ -8,15 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 
-
-/* Представление (View): Это слой, который отображает данные
-пользователю и обрабатывает пользовательский ввод. Представление
-представляет собой интерфейс пользователя, такой как окна, кнопки,
-текстовые поля и т. д. Представление не содержит
-бизнес-логику и должно быть максимально декларативным.*/
 public class View extends JPanel{
     private final Model model;
-    private final Map<Class<?>, EntityRenderer<?>> rendererByEntityType = Map.of(RobotEntity.class, new RobotRenderer<>());
+    private final Map<Class<?>, EntityRenderer<?>> rendererByEntityType = Map.of(RobotEntity.class, new RobotRenderer<>(), FoodEntity.class, new FoodRenderer<>());
     public View(Model model) {
         this.model = model;
     }
@@ -24,6 +19,7 @@ public class View extends JPanel{
     {
         EventQueue.invokeLater(this::repaint);
     }
+
 
     @Override
     public void paint(Graphics g)

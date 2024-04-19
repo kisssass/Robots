@@ -3,6 +3,7 @@ package model;
 import java.awt.*;
 
 public class RobotEntity implements Entity {
+    private int m_robotDiameter;
     private double m_robotPositionX;
     private double m_robotPositionY;
     private double m_robotDirection;
@@ -12,11 +13,14 @@ public class RobotEntity implements Entity {
 
     private final double maxVelocity;
     private final double maxAngularVelocity;
+    private Color m_color;
 
 
-    public RobotEntity(double robotPositionX, double robotPositionY,
+    public RobotEntity(Color color, int robotDiameter, double robotPositionX, double robotPositionY,
                        double robotDirection, int targetPositionX,
                        int targetPositionY , double Velocity, double AngularVelocity) {
+        this.m_color = color;
+        this.m_robotDiameter = robotDiameter;
         this.m_robotPositionX = robotPositionX;
         this.m_robotPositionY = robotPositionY;
         this.m_robotDirection = robotDirection;
@@ -26,6 +30,14 @@ public class RobotEntity implements Entity {
         this.maxAngularVelocity = AngularVelocity;
     }
 
+    public Color getColor() {
+        return m_color;
+    }
+    public void setColor(Color color) {
+        this.m_color = color;
+    }
+    public int getRobotDiameter() {return m_robotDiameter;}
+    public void setRobotDiameter(int diameter){ this.m_robotDiameter =diameter;}
     public double getRobotPositionX() {return m_robotPositionX;}
     public void setRobotPositionX(double positionX){ this.m_robotPositionX =positionX;}
     public double getRobotPositionY() {
