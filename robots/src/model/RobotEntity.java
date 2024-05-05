@@ -3,36 +3,43 @@ package model;
 import java.awt.*;
 
 public class RobotEntity implements Entity {
+    private int player;
+    private boolean moveLeft;
+    private boolean moveRight;
+    private boolean moveUp;
+    private boolean moveDown;
     private int m_robotDiameter;
     private double m_robotPositionX;
     private double m_robotPositionY;
-    private double m_robotDirection;
-
-    private int m_targetPositionX;
-    private int m_targetPositionY;
-
-    private final double maxVelocity;
-    private final double maxAngularVelocity;
     private Color m_color;
 
 
-    public RobotEntity(Color color, int robotDiameter, double robotPositionX, double robotPositionY,
-                       double robotDirection, int targetPositionX,
-                       int targetPositionY , double Velocity, double AngularVelocity) {
+    public RobotEntity(int playerNumber, boolean isMoveLeft, boolean isMoveRight, boolean isMoveUp, boolean isMoveDown, Color color, int robotDiameter, double robotPositionX, double robotPositionY) {
+        this.player = playerNumber;
+        this.moveLeft = isMoveLeft;
+        this.moveRight = isMoveRight;
+        this.moveUp = isMoveUp;
+        this.moveDown = isMoveDown;
         this.m_color = color;
         this.m_robotDiameter = robotDiameter;
         this.m_robotPositionX = robotPositionX;
         this.m_robotPositionY = robotPositionY;
-        this.m_robotDirection = robotDirection;
-        this.m_targetPositionX = targetPositionX;
-        this.m_targetPositionY = targetPositionY;
-        this.maxVelocity = Velocity;
-        this.maxAngularVelocity = AngularVelocity;
     }
 
     public Color getColor() {
         return m_color;
     }
+    public int getPlayer(){return player;}
+    public void setPlayer(int number){this.player = number;}
+
+    public boolean getMoveLeft() {return moveLeft;}
+    public void setMoveLeft(boolean left){ this.moveLeft =left;}
+    public boolean getMoveRight() {return moveRight;}
+    public void setMoveRight(boolean right){ this.moveRight =right;}
+    public boolean getMoveUp() {return moveUp;}
+    public void setMoveUp(boolean up){ this.moveUp =up;}
+    public boolean getMoveDown() {return moveDown;}
+    public void setMoveDown(boolean down){ this.moveDown =down;}
     public void setColor(Color color) {
         this.m_color = color;
     }
@@ -44,25 +51,6 @@ public class RobotEntity implements Entity {
         return m_robotPositionY;
     }
     public void setRobotPositionY(double positionY){ this.m_robotPositionY =positionY;}
-
-    public double getRobotDirection() {
-        return m_robotDirection;
-    }
-    public void setRobotDirection(double direction){ this.m_robotDirection=direction;}
-
-    public int getTargetPositionX() {return m_targetPositionX;}
-    public void setM_targetPositionX(int positionX){this.m_targetPositionX = positionX;}
-    public int getTargetPositionY() {return m_targetPositionY;
-    }
-    public void setM_targetPositionY(int positionY){this.m_targetPositionY = positionY;}
-
-    public double getMaxVelocity() {
-        return maxVelocity;
-    }
-    public double getMaxAngularVelocity() {
-        return maxAngularVelocity;
-    }
-
     public void update() {}
 
 }

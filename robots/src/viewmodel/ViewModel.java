@@ -4,6 +4,8 @@ import view.View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Timer;
@@ -37,7 +39,7 @@ public class ViewModel extends JInternalFrame{
             {
                 view.onRedrawEvent();
             }
-        }, 0, 50);
+        }, 0, 10);
         m_timer.schedule(new TimerTask()
         {
             @Override
@@ -62,12 +64,24 @@ public class ViewModel extends JInternalFrame{
                 model.eatFood();
             }
         }, 0, 50);
-        addMouseListener(new MouseAdapter()
+        m_timer.schedule(new TimerTask()
         {
             @Override
-            public void mouseClicked(MouseEvent e)
+            public void run()
             {
-                model.mouseActionUpdate(e.getPoint());
+                model.eatRobots();
+            }
+        }, 0, 50);
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                model.keyActionUpdate(e,"pressed");
+                repaint();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                model.keyActionUpdate(e, "realeased");
                 repaint();
             }
         });

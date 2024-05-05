@@ -19,6 +19,9 @@ public class GameWindow extends JFrame{
         ViewModel viewModel = new ViewModel();
         viewModel.setSize(400,  400);
         addWindow(viewModel);
+        viewModel.setFocusable(true);
+        viewModel.requestFocus();
+        viewModel.requestFocusInWindow();
     }
     protected void addWindow(JInternalFrame frame)
     {

@@ -2,8 +2,6 @@ package view;
 import model.FoodEntity;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-
 
 public class FoodRenderer <E extends FoodRenderer> implements EntityRenderer<FoodEntity> {
     @Override
@@ -12,8 +10,6 @@ public class FoodRenderer <E extends FoodRenderer> implements EntityRenderer<Foo
     }
     private void drawFood(Graphics2D g, int x, int y, Color color)
     {
-        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
-        g.setTransform(t);
         g.setColor(color);
         fillOval(g, x, y, 10, 10);
         g.setColor(Color.BLACK);
