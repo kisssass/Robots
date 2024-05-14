@@ -2,20 +2,35 @@ package model;
 
 import java.awt.*;
 
+import static java.lang.Integer.parseInt;
+
 public class RobotEntity implements Entity {
     private int player;
     private boolean moveLeft;
     private boolean moveRight;
     private boolean moveUp;
     private boolean moveDown;
+    private int UpKey;
+    private int DownKey;
+    private int LeftKey;
+    private int RightKey;
+    private int SplitKey;
+
     private int m_robotDiameter;
     private double m_robotPositionX;
     private double m_robotPositionY;
     private Color m_color;
 
 
-    public RobotEntity(int playerNumber, boolean isMoveLeft, boolean isMoveRight, boolean isMoveUp, boolean isMoveDown, Color color, int robotDiameter, double robotPositionX, double robotPositionY) {
+    public RobotEntity(int playerNumber,int splitK, int upK, int downK, int leftK, int rightK,
+                       boolean isMoveLeft, boolean isMoveRight, boolean isMoveUp, boolean isMoveDown, Color color,
+                       int robotDiameter, double robotPositionX, double robotPositionY) {
         this.player = playerNumber;
+        this.SplitKey = splitK;
+        this.UpKey = upK;
+        this.DownKey = downK;
+        this.LeftKey =leftK;
+        this.RightKey = rightK;
         this.moveLeft = isMoveLeft;
         this.moveRight = isMoveRight;
         this.moveUp = isMoveUp;
@@ -31,7 +46,12 @@ public class RobotEntity implements Entity {
     }
     public int getPlayer(){return player;}
     public void setPlayer(int number){this.player = number;}
+    public int getSplitKey(){return SplitKey;}
 
+    public int getUpKey(){return UpKey;}
+    public int getDownKey(){return DownKey;}
+    public int getLeftKey(){return LeftKey;}
+    public int getRightKey(){return RightKey;}
     public boolean getMoveLeft() {return moveLeft;}
     public void setMoveLeft(boolean left){ this.moveLeft =left;}
     public boolean getMoveRight() {return moveRight;}
@@ -51,6 +71,9 @@ public class RobotEntity implements Entity {
         return m_robotPositionY;
     }
     public void setRobotPositionY(double positionY){ this.m_robotPositionY =positionY;}
-    public void update() {}
+    public void update(ModelContext modelContext) {
+        modelContext.eatFood(this);
+        modelContext.moveRobot(this);
+    }
 
 }

@@ -1,27 +1,48 @@
 package model;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Collections;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
 
-import java.util.Random;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static java.lang.Integer.parseInt;
 
 
 public class Model{
     private List<Entity> entities = new CopyOnWriteArrayList<>();
+    private final ModelContext modelContext;
+    private final Properties properties;
     public Model()
     {
-        entities.add(new RobotEntity(1,false, false, false,false, chooseColor(), 30,300, 300));
-        entities.add(new RobotEntity(2,false, false, false,false, chooseColor(), 30,200, 200));
-        entities.add(new RobotEntity(3,false, false, false,false, chooseColor(), 30,100, 100));
+        try{
+            properties = new Properties();
+            properties.load(new FileInputStream("robots/src/resources/game.properties"));
+            modelContext = new ModelContext(this);
+
+            entities.add(new RobotEntity(1,parseInt(properties.getProperty("FirstPlayer_SplitKey")) , parseInt(properties.getProperty("FirstPlayer_UpKey")),parseInt(properties.getProperty("FirstPlayer_DownKey")),
+                    parseInt(properties.getProperty("FirstPlayer_LeftKey")),parseInt(properties.getProperty("FirstPlayer_RightKey")),false, false,
+                    false,false, chooseColor(), 30,300, 300));
+
+            entities.add(new RobotEntity(2,parseInt(properties.getProperty("SecondPlayer_SplitKey")), parseInt(properties.getProperty("SecondPlayer_UpKey")),parseInt(properties.getProperty("SecondPlayer_DownKey")),
+                    parseInt(properties.getProperty("SecondPlayer_LeftKey")),parseInt(properties.getProperty("SecondPlayer_RightKey")),  false, false,
+                    false,false, chooseColor(), 30,200, 200));
+
+            entities.add(new RobotEntity(3,parseInt(properties.getProperty("ThirdPlayer_SplitKey")), parseInt(properties.getProperty("ThirdPlayer_UpKey")),parseInt(properties.getProperty("ThirdPlayer_DownKey")),
+                    parseInt(properties.getProperty("ThirdPlayer_LeftKey")),parseInt(properties.getProperty("ThirdPlayer_RightKey")),  false, false,
+                    false,false, chooseColor(), 30,100, 100));
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
     }
     public List<Entity> getEntities() {
         return entities;
     }
     public void updateModel() {
         for (Entity entity : entities) {
-            entity.update();
+            entity.update(modelContext);
         }
     }
     public static int rnd(int min, int max)
@@ -51,62 +72,33 @@ public class Model{
     public void keyActionUpdate(KeyEvent e, String action) {
         for (Entity entity : entities) {
             if (entity instanceof RobotEntity robot){
-                if(action.equals("pressed") ){
-                    if(robot.getPlayer()==1){
-                        if (e.getKeyCode()==KeyEvent.VK_LEFT) robot.setMoveLeft(true);
-                        if (e.getKeyCode()==KeyEvent.VK_RIGHT) robot.setMoveRight(true);
-                        if (e.getKeyCode()==KeyEvent.VK_UP) robot.setMoveUp(true);
-                        if (e.getKeyCode()==KeyEvent.VK_DOWN) robot.setMoveDown(true);
-                    }
-                    if(robot.getPlayer()==2){
-                        if (e.getKeyCode()==KeyEvent.VK_A) robot.setMoveLeft(true);
-                        if (e.getKeyCode()==KeyEvent.VK_D) robot.setMoveRight(true);
-                        if (e.getKeyCode()==KeyEvent.VK_W) robot.setMoveUp(true);
-                        if (e.getKeyCode()==KeyEvent.VK_S) robot.setMoveDown(true);
-                    }
-                    if(robot.getPlayer()==3){
-                        if (e.getKeyCode()==KeyEvent.VK_H) robot.setMoveLeft(true);
-                        if (e.getKeyCode()==KeyEvent.VK_K) robot.setMoveRight(true);
-                        if (e.getKeyCode()==KeyEvent.VK_U) robot.setMoveUp(true);
-                        if (e.getKeyCode()==KeyEvent.VK_J) robot.setMoveDown(true);
-                    }
+                if(action.equals("pressed")){
+                    if (e.getKeyCode()==robot.getLeftKey()) robot.setMoveLeft(true);
+                    if (e.getKeyCode()==robot.getRightKey()) robot.setMoveRight(true);
+                    if (e.getKeyCode()==robot.getUpKey()) robot.setMoveUp(true);
+                    if (e.getKeyCode()==robot.getDownKey()) robot.setMoveDown(true);
+                    if (e.getKeyCode()==robot.getSplitKey()) split(robot);
                 }
-                if(action.equals("realeased") ){
-                    if(robot.getPlayer()==1){
-                        if (e.getKeyCode()==KeyEvent.VK_LEFT) robot.setMoveLeft(false);
-                        if (e.getKeyCode()==KeyEvent.VK_RIGHT) robot.setMoveRight(false);
-                        if (e.getKeyCode()==KeyEvent.VK_UP) robot.setMoveUp(false);
-                        if (e.getKeyCode()==KeyEvent.VK_DOWN) robot.setMoveDown(false);
-                    }
-                    if(robot.getPlayer()==2){
-                        if (e.getKeyCode()==KeyEvent.VK_A) robot.setMoveLeft(false);
-                        if (e.getKeyCode()==KeyEvent.VK_D) robot.setMoveRight(false);
-                        if (e.getKeyCode()==KeyEvent.VK_W) robot.setMoveUp(false);
-                        if (e.getKeyCode()==KeyEvent.VK_S) robot.setMoveDown(false);
-                    }
-                    if(robot.getPlayer()==3){
-                        if (e.getKeyCode()==KeyEvent.VK_H) robot.setMoveLeft(false);
-                        if (e.getKeyCode()==KeyEvent.VK_K) robot.setMoveRight(false);
-                        if (e.getKeyCode()==KeyEvent.VK_U) robot.setMoveUp(false);
-                        if (e.getKeyCode()==KeyEvent.VK_J) robot.setMoveDown(false);
-                    }
+                if(action.equals("realeased")){
+                    if (e.getKeyCode()==robot.getLeftKey()) robot.setMoveLeft(false);
+                    if (e.getKeyCode()==robot.getRightKey()) robot.setMoveRight(false);
+                    if (e.getKeyCode()==robot.getUpKey()) robot.setMoveUp(false);
+                    if (e.getKeyCode()==robot.getDownKey()) robot.setMoveDown(false);
                 }
             }
         }
-    }
-    public void onModelUpdateEvent()
-    {
-        for (Entity entity : entities) {
-            if (entity instanceof RobotEntity robot){
-                if (robot.getMoveLeft()) robot.setRobotPositionX(robot.getRobotPositionX()-2);
-                if (robot.getMoveRight()) robot.setRobotPositionX(robot.getRobotPositionX()+2);
-                if (robot.getMoveUp()) robot.setRobotPositionY(robot.getRobotPositionY()-2);
-                if (robot.getMoveDown()) robot.setRobotPositionY(robot.getRobotPositionY()+2);
-            }
-        }
-        robotSize();
     }
     public void robotSize(){
+        /*public static Comparator<Entity> createPersonLambdaComparator() {
+            return Comparator.comparing(Entity::getClass)
+                    .thenComparing(Person::getAge);
+        }
+        Collections.sort(entities, new Comparator<RobotEntity>() {
+            @Override
+            public int compare(RobotEntity o1, RobotEntity o2) {
+                return o1.getRobotDiameter() - o2.getRobotDiameter();
+            }
+        });*/
         int size1=0;
         int index1=0;
         int size2=0;
@@ -149,18 +141,6 @@ public class Model{
         };
     }
 
-    public void eatFood(){
-        for (Entity entity : entities) {
-            if (entity instanceof RobotEntity robot) {
-                double robotX = robot.getRobotPositionX();
-                double robotY = robot.getRobotPositionY();
-                double robotDiameter = robot.getRobotDiameter();
-                if(isSamePosition(robotX, robotY, robotDiameter)){
-                    robot.setRobotDiameter(robot.getRobotDiameter()+10);
-                }
-            }
-        }
-    }
     public void eatRobots(){
         double robotX1=0;
         double robotY1=0;
@@ -261,7 +241,7 @@ public class Model{
         }
     };
 
-    private boolean isSamePosition(double robotX, double robotY, double robotDiameter){
+    public boolean isSamePosition(double robotX, double robotY, double robotDiameter){
         for (Entity entity : entities) {
             if (entity instanceof FoodEntity food){
                 if((Math.abs(food.getFoodPositionX() - robotX )<= robotDiameter/2) && (Math.abs(food.getFoodPositionY() - robotY)<= robotDiameter/2)){
@@ -272,4 +252,14 @@ public class Model{
         }
         return false;
     }
+    public void split(RobotEntity robot){
+        if(robot.getRobotDiameter()>30){
+            int newDiameter = robot.getRobotDiameter()/2;
+            robot.setRobotDiameter(newDiameter);
+            entities.add(new RobotEntity(robot.getPlayer(),robot.getSplitKey(),robot.getUpKey(),robot.getDownKey(),robot.getLeftKey(),
+                    robot.getRightKey(),robot.getMoveLeft(),robot.getMoveRight(),robot.getMoveUp(), robot.getMoveDown(),
+                    robot.getColor(),newDiameter,robot.getRobotPositionX()+newDiameter,robot.getRobotPositionY()+newDiameter));
+        }
+    }
+
 }

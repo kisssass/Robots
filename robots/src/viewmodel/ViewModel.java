@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,14 +43,6 @@ public class ViewModel extends JInternalFrame{
             @Override
             public void run()
             {
-                model.onModelUpdateEvent();
-            }
-        }, 0, 10);
-        m_timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
                 model.addFood();
             }
         }, 0, 1000);
@@ -61,9 +51,9 @@ public class ViewModel extends JInternalFrame{
             @Override
             public void run()
             {
-                model.eatFood();
+                model.updateModel();
             }
-        }, 0, 50);
+        }, 0, 10);
         m_timer.schedule(new TimerTask()
         {
             @Override

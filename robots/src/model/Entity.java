@@ -1,5 +1,5 @@
 package model;
 
 public interface Entity {
-    void update();
+    void update(ModelContext modelContext);
 }

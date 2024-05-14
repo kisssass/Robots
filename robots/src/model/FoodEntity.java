@@ -32,7 +32,7 @@ public class FoodEntity implements Entity{
         this.m_color = color;
     }
     @Override
-    public void update() {
+    public void update(ModelContext modelContext) {
 
     }
 }
