@@ -6,19 +6,21 @@ public class ModelContext {
     public ModelContext(Model model) {
         this.model = model;
     }
-    public void eatFood (RobotEntity eater){
-        double robotX = eater.getRobotPositionX();
-        double robotY = eater.getRobotPositionY();
-        double robotDiameter = eater.getRobotDiameter();
-        if(model.isSamePosition(robotX, robotY, robotDiameter)){
-            eater.setRobotDiameter(eater.getRobotDiameter()+10);
+
+    public void eatEntities (Entity eater){
+        double eaterX = eater.getEntityPositionX();
+        double eaterY = eater.getEntityPositionY();
+        if(eater instanceof RobotEntity robot){
+            model.eating(robot, eaterX, eaterY);
         }
     }
+
     public void moveRobot (RobotEntity mover){
-        if (mover.getMoveLeft()) mover.setRobotPositionX(mover.getRobotPositionX()-2);
-        if (mover.getMoveRight()) mover.setRobotPositionX(mover.getRobotPositionX()+2);
-        if (mover.getMoveUp()) mover.setRobotPositionY(mover.getRobotPositionY()-2);
-        if (mover.getMoveDown()) mover.setRobotPositionY(mover.getRobotPositionY()+2);
-        model.robotSize();
+        if (mover.getMoveLeft()) mover.setPositionX(mover.getEntityPositionX()-2);
+        if (mover.getMoveRight()) mover.setPositionX(mover.getEntityPositionX()+2);
+        if (mover.getMoveUp()) mover.setPositionY(mover.getEntityPositionY()-2);
+        if (mover.getMoveDown()) mover.setPositionY(mover.getEntityPositionY()+2);
+        model.sortByRobotSize();
+        model.coupling(mover);
     }
 }

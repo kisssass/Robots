@@ -13,16 +13,18 @@ import java.util.TimerTask;
 public class ViewModel extends JInternalFrame{
     private final View view;
     private final Model model;
+    private final static int numberOfPlayers = 3;
+
 
     private static java.util.Timer initTimer()
     {
         java.util.Timer timer = new Timer("events generator", true);
         return timer;
     }
-    public ViewModel()
+    public ViewModel(int height, int width)
     {
         super("Игровое поле", true, true, true, true);
-        model = new Model();
+        model = new Model(numberOfPlayers, width, height);
         view = new View(model);
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -46,6 +48,7 @@ public class ViewModel extends JInternalFrame{
                 model.addFood();
             }
         }, 0, 1000);
+
         m_timer.schedule(new TimerTask()
         {
             @Override
@@ -54,14 +57,6 @@ public class ViewModel extends JInternalFrame{
                 model.updateModel();
             }
         }, 0, 10);
-        m_timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                model.eatRobots();
-            }
-        }, 0, 50);
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

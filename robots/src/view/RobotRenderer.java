@@ -7,7 +7,7 @@ import java.awt.*;
 public class RobotRenderer<E extends RobotEntity> implements EntityRenderer<RobotEntity> {
     @Override
     public void render(RobotEntity entity, Graphics2D g2d) {
-        drawRobot(g2d, round(entity.getRobotPositionX()), round(entity.getRobotPositionY()),entity.getRobotDiameter(), entity.getColor());
+        drawRobot(g2d, round(entity.getEntityPositionX()), round(entity.getEntityPositionY()),entity.getRobotDiameter(), entity.getColor());
     }
 
     private void drawRobot(Graphics2D g, int x, int y, int diameter, Color color)

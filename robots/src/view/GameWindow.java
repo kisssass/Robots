@@ -16,8 +16,8 @@ public class GameWindow extends JFrame{
 
         setContentPane(desktopPane);
 
-        ViewModel viewModel = new ViewModel();
-        viewModel.setSize(400,  400);
+        ViewModel viewModel = new ViewModel(screenSize.height,screenSize.width);
+        viewModel.setSize(500,  500);
         addWindow(viewModel);
         viewModel.setFocusable(true);
         viewModel.requestFocus();
